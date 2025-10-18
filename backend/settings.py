@@ -3,10 +3,10 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'your-secret-key'  # make sure this stays private
+SECRET_KEY = 'your-secret-key'  # Make sure this stays private
 DEBUG = True
 ALLOWED_HOSTS = [
-    "mini-lms-bc6d.onrender.com",
+    "mini-lms-bc6d.onrender.com",  # Add your Render domain here
     "localhost",
     "127.0.0.1",
 ]
@@ -22,12 +22,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # 👇 Add these 2
+    # 👇 Add these for React
     "corsheaders",
     "rest_framework",
     
-
-    # 👇 Add your custom apps here
+    # 👇 Your custom apps
     "accounts",
 ]
 # ------------------------------------------
@@ -48,17 +47,28 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATIC_URL = '/static/'
-CORS_ALLOW_ALL_ORIGINS = True
 # ------------------------------------------
 
-ROOT_URLCONF = "backend.urls"
+# ------------------------------------------
+# 🔹 STATIC FILES
+# ------------------------------------------
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/static/'
 
+# Serving React's static files
+STATICFILES_DIRS = [
+    BASE_DIR / 'frontend' / 'build' / 'static',  # Path to React build static files
+]
+
+# ------------------------------------------
+
+# ------------------------------------------
+# 🔹 TEMPLATES
+# ------------------------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        'DIRS': [BASE_DIR / 'frontend' / 'build'],
+        'DIRS': [BASE_DIR / 'frontend' / 'build'],  # Directory where React's index.html is located
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -70,8 +80,13 @@ TEMPLATES = [
         },
     },
 ]
+# ------------------------------------------
 
+# ------------------------------------------
+# 🔹 WSGI APPLICATION
+# ------------------------------------------
 WSGI_APPLICATION = "backend.wsgi.application"
+# ------------------------------------------
 
 # ------------------------------------------
 # 🔹 DATABASE
@@ -82,6 +97,7 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+# ------------------------------------------
 
 # ------------------------------------------
 # 🔹 PASSWORD VALIDATORS
@@ -92,6 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+# ------------------------------------------
 
 # ------------------------------------------
 # 🔹 INTERNATIONALIZATION
@@ -100,33 +117,28 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
-
 # ------------------------------------------
-# 🔹 STATIC FILES
-# ------------------------------------------
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    BASE_DIR / 'frontend' / 'build' / 'static',  # Update this to your React build folder
-]
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ------------------------------------------
 # 🔹 CORS SETTINGS (for React frontend)
 # ------------------------------------------
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    "http://localhost:5173",  # For local development (React dev server)
+    "http://127.0.0.1:5173",  # React dev server
+    "https://your-frontend.vercel.app",  # Add your frontend domain here (e.g., Vercel)
 ]
-
 CORS_ALLOW_CREDENTIALS = True
+# ------------------------------------------
+
+# ------------------------------------------
+# 🔹 USER MODEL
+# ------------------------------------------
 AUTH_USER_MODEL = 'accounts.User'
+# ------------------------------------------
 
-
-CORS_ALLOWED_ORIGINS = [
-    "https://your-frontend.vercel.app",
-    "http://localhost:5173",  # keep for local dev
-]
+# ------------------------------------------
+# 🔹 STATIC URL
+# ------------------------------------------
+# Ensure there is only one STATIC_URL setting
 STATIC_URL = '/static/'
-
+# ------------------------------------------
