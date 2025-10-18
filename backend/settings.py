@@ -104,7 +104,11 @@ USE_TZ = True
 # ------------------------------------------
 # 🔹 STATIC FILES
 # ------------------------------------------
-STATIC_URL = "static/"
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'frontend' / 'build' / 'static',  # Update this to your React build folder
+]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
