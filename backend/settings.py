@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'your-secret-key'  # make sure this stays private
 DEBUG = True
 ALLOWED_HOSTS = [
-    "wdzinternship-mark2-of3l.onrender.com",  # your Render domain
+    "mini-lms-bc6d.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
