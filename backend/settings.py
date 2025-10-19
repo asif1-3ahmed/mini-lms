@@ -19,11 +19,28 @@ INSTALLED_APPS = [
     "accounts",
 ]
 
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Static files settings
+STATIC_URL = '/static/'  # URL for accessing static files
+
+# Directory where static files will be collected in production (for Render)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Directories for collecting static files during development
+STATICFILES_DIRS = [
+    BASE_DIR / 'frontend' / 'dist' / 'assets',  # Ensure this points to the 'assets' directory of your React build
+]
+
+# Whitenoise to serve static files efficiently
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # Ensure Whitenoise is included
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Whitenoise should be included here
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -31,14 +48,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-STATIC_URL = '/static/'
-
-# Path to the frontend's build directory (React build)
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend', 'dist', 'assets'),
-]
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 ROOT_URLCONF = 'accounts.urls'
 
 # Template settings (adjust if needed)
