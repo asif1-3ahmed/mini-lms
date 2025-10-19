@@ -1,12 +1,14 @@
 from pathlib import Path
 import os
 
+# Base directory path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'your-secret-key'
 DEBUG = False  # Set to False in production
 ALLOWED_HOSTS = ['mini-lms-crh4.onrender.com', 'localhost', '127.0.0.1']
 
+# Installed apps
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -16,26 +18,19 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
-    "accounts",
+    "accounts",  # Your custom app
 ]
-
-import os
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Static files settings
 STATIC_URL = '/static/'  # URL for accessing static files
-
-# Directory where static files will be collected in production (for Render)
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Where to collect static files in production
 
 # Directories for collecting static files during development
 STATICFILES_DIRS = [
-    BASE_DIR / 'frontend' / 'dist' / 'assets',  # Ensure this points to the 'assets' directory of your React build
+    BASE_DIR / 'frontend' / 'dist' / 'assets',  # Path to React build folder's assets
 ]
 
-# Whitenoise to serve static files efficiently
+# Middleware to serve static files efficiently
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -48,13 +43,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# URL configuration (points to accounts.urls for routing)
 ROOT_URLCONF = 'accounts.urls'
 
-# Template settings (adjust if needed)
+# Template settings
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend', 'dist')],
+        'DIRS': [BASE_DIR / 'frontend' / 'dist'],  # Ensure index.html is here
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,12 +63,15 @@ TEMPLATES = [
     },
 ]
 
+# CORS settings for cross-origin requests
 CORS_ALLOWED_ORIGINS = [
     "https://your-frontend.vercel.app",
-    "http://localhost:5173",
+    "http://localhost:5173",  # Local development server
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# Custom user model for accounts app
 AUTH_USER_MODEL = 'accounts.User'
 
 # Don't forget to run collectstatic after changes
