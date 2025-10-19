@@ -39,7 +39,7 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-ROOT_URLCONF = 'backend.urls'
+ROOT_URLCONF = 'accounts.urls'
 
 # Template settings (adjust if needed)
 TEMPLATES = [
