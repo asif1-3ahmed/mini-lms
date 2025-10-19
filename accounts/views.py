@@ -3,6 +3,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 import json
+from django.views.generic import TemplateView
+
+class IndexView(TemplateView):
+    template_name = "index.html"  # or use the path to your static directory
 
 User = get_user_model()
 
