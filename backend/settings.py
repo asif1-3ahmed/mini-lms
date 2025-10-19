@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'your-secret-key'  # make sure this stays private
@@ -105,9 +105,11 @@ USE_TZ = True
 # 🔹 STATIC FILES
 # ------------------------------------------
 STATIC_URL = "static/"
+# Path to the frontend's build directory (adjust if needed)
 STATICFILES_DIRS = [
-    BASE_DIR / 'frontend/dist',  # Adjust this path if needed
+    os.path.join(BASE_DIR, 'frontend', 'dist'),  # Path to your React build (dist folder)
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
