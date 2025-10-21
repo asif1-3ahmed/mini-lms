@@ -51,7 +51,7 @@ DATABASES = {
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
-    BASE_DIR / "frontend" / "dist" / "assets",  # React built assets
+    BASE_DIR / "frontend" / "dist",  # <-- CORRECTED: Point to the 'dist' folder
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
