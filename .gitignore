@@ -1,0 +1,20 @@
+# Node modules
+frontend/node_modules/
+
+# Build outputs
+frontend/dist/
+
+# Python virtual environment
+venv/
+
+# Django collected static files
+backend/staticfiles/
+
+# SQLite database (optional, if not needed)
+db.sqlite3
+
+# OS and editor junk
+__pycache__/
+*.pyc
+.DS_Store
+*.log
