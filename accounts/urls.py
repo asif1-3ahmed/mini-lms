@@ -10,5 +10,5 @@ urlpatterns = [
     path('api/auth/', include('accounts.urls')), 
     path('register/', views.register_user, name='register'),
     path('login/', views.login_user, name='login'),
-    re_path(r'^(?!static/)(?:.*)/?$', TemplateView.as_view(template_name='index.html')),
+re_path(r'^(?!assets/|static/)(?:.*)/?$', TemplateView.as_view(template_name='index.html')),
 ]
