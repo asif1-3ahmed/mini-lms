@@ -1,9 +1,15 @@
 from pathlib import Path
 import os
+import dj_database_url
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: keep the secret key secret in production!
+# Use environment variable, with a fallback for local development.
 SECRET_KEY = os.environ.get("SECRET_KEY", "your-secret-key")
+
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
@@ -12,6 +18,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -26,7 +33,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # must come after SecurityMiddleware
+    # WhiteNoise must be listed immediately after SecurityMiddleware
+    "whitenoise.middleware.WhiteNoiseMiddleware", 
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -36,22 +44,29 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# Point to your accounts.urls file
-ROOT_URLCONF = "accounts.urls"
+# Root URL Configuration
+ROOT_URLCONF = "accounts.urls" # Confirmed to be your main router
 WSGI_APPLICATION = "backend.wsgi.application"
 
+# --- Database Configuration (Critical Production Fix) ---
+# Uses dj-database-url to handle both local SQLite (default) and 
+# PostgreSQL (via DATABASE_URL environment variable on Render).
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        # Fallback to local SQLite if DATABASE_URL is not set (e.g., local dev)
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 # --- Static files (React + Django) ---
 STATIC_URL = "/static/"
+# Where collected files go after python manage.py collectstatic
 STATIC_ROOT = BASE_DIR / "staticfiles"
+# Where collectstatic looks for static files (the Vite/React build output)
 STATICFILES_DIRS = [
-    # CRITICAL FIX: Point to the 'static' folder *inside* 'dist'
+    # Fixed to point directly to the 'dist' folder, as determined in earlier steps
     BASE_DIR / "frontend" / "dist",
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -80,5 +95,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
+# User Model and Default Fields
 AUTH_USER_MODEL = "accounts.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
