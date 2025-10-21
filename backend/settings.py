@@ -52,7 +52,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     # CRITICAL FIX: Point to the 'static' folder *inside* 'dist'
-    BASE_DIR / "frontend" / "dist" / "static",
+    BASE_DIR / "frontend" / "dist",
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
