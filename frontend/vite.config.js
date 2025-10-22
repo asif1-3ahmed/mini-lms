@@ -1,9 +1,11 @@
+// frontend/vite.config.js
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
+  // 🛑 CRITICAL FIX: Forces all asset paths (JS/CSS) to be relative 
+  // (e.g., href="assets/index.css" instead of href="/assets/index.css")
+  base: '', 
   plugins: [react()],
-  // CRITICAL FIX: Base URL for serving assets in production
-  base: '/static/', 
 })
