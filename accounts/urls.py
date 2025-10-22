@@ -1,20 +1,23 @@
+# Project's main urls.py (e.g., backend/urls.py)
+
 from django.contrib import admin
 from django.urls import path, re_path, include
-from accounts.views import IndexView # <--- Make sure you import IndexView
+# Assuming your IndexView is in accounts/views.py
+from accounts.views import IndexView 
 
 urlpatterns = [
-    # 1. DJANGO ADMIN
+    # 1. DJANGO ADMIN PATH
     path('admin/', admin.site.urls),
 
     # 2. APPLICATION API ROUTES
-    # All API calls will start with /api/auth/
+    # All API calls (register, login, etc.) will start with /api/auth/
     path('api/auth/', include('accounts.urls')),
 
-    # 🛑 CRITICAL FIX: Removed duplicate login/register path('',...) from accounts.urls
-
     # 3. FRONTEND SPA ROUTE (MUST BE LAST)
-    # This catches the root path (''), any single route ('/dashboard'), 
-    # and any deep route ('/course/123').
-    re_path(r'^$', IndexView.as_view()), # Catches the root: /
-    re_path(r'^(?:.*)/?$', IndexView.as_view(), name='react_app'), # Catches all sub-paths
+    # This regex is simple and robust: it catches everything *except* # the paths defined above and passes them to the IndexView.
+
+    # It catches the root ('/') and all other React routes (e.g., /dashboard, /course/1)
+    re_path(r'^(?!admin/|api/|assets/|static/).*$', 
+            IndexView.as_view(), 
+            name='react_app_root'),
 ]
