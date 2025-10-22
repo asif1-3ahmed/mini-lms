@@ -1,8 +1,9 @@
 import axios from "axios";
 
-// 🛑 CRITICAL FIX: Read the URL from a Vite environment variable.
-// It falls back to the local address if the environment variable is not set.
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+// FINAL FIX: Use an empty string for the baseURL.
+// This makes all API calls relative to the host serving the frontend 
+// (which is your live Render domain), bypassing environment variable issues.
+const API_BASE_URL = "";
 
 const API = axios.create({
   baseURL: API_BASE_URL,
@@ -11,6 +12,7 @@ const API = axios.create({
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
+    // Note: The 'Bearer' scheme is correct for Django Rest Framework JWT/Token authentication
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
