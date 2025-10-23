@@ -1,13 +1,9 @@
-# Project's main urls.py (e.g., backend/urls.py)
-
-from django.contrib import admin
-from django.urls import path, re_path, include
-
+# accounts/urls.py
+from django.urls import path
+from . import views  # import your views here
 
 urlpatterns = [
-    # 1. DJANGO ADMIN PATH
-    path('admin/', admin.site.urls),
-
-    # 2. APPLICATION API ROUTES
-    path('api/auth/', include('accounts.urls')),
+    path('register/', views.register_user, name='register'),
+    path('login/', views.login_user, name='login'),
+    path('profile/', views.profile, name='profile'),
 ]
