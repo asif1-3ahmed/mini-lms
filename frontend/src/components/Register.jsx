@@ -20,10 +20,12 @@ export default function Register() {
     setStatus({ message: "🔵 Checking user availability...", type: "info" });
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/register/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+      const response = await fetch("https://mini-lms-crh4.onrender.com/api/auth/register/", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(formData),
+});
+
       });
 
       const data = await response.json();
