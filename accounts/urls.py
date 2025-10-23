@@ -10,9 +10,4 @@ urlpatterns = [
 
     # 2. APPLICATION API ROUTES
     path('api/auth/', include('accounts.urls')),
-
-    # 3. FRONTEND SPA ROUTE (MUST BE LAST)
-    re_path(r'^(?!admin/|api/|assets/|static/).*$', 
-            IndexView.as_view(), 
-            name='react_app_root'),
 ]
