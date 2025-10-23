@@ -60,7 +60,7 @@ TEMPLATES = [
 ]
 
 # Root URL Configuration
-ROOT_URLCONF = "accounts.urls" # Confirmed to be your main router
+ROOT_URLCONF = "backend.urls" # Confirmed to be your main router
 WSGI_APPLICATION = "backend.wsgi.application"
 
 # --- Database Configuration (Critical Production Fix) ---
