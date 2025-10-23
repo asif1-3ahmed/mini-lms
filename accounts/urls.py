@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from django.urls import path, re_path, include
-from accounts.views import IndexView # <--- Make sure this is imported
+
 
 urlpatterns = [
     # 1. DJANGO ADMIN PATH
