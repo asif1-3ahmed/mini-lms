@@ -65,28 +65,10 @@ STATIC_URL = "/static/"
 # Where collected files go after python manage.py collectstatic
 STATIC_ROOT = BASE_DIR / "staticfiles"
 # Where collectstatic looks for static files (the Vite/React build output)
-STATICFILES_DIRS = [
-    # Fixed to point directly to the 'dist' folder, as determined in earlier steps
-    BASE_DIR / "frontend" / "dist",
-]
+
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# --- Templates (for React index.html) ---
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "frontend" / "dist"],  # where index.html is located
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
+
 
 # --- CORS ---
 CORS_ALLOWED_ORIGINS = [
