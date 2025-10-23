@@ -72,9 +72,10 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # --- CORS ---
 CORS_ALLOWED_ORIGINS = [
-    "https://mini-lms-crh4.onrender.com",
-    "http://localhost:5173",
+    "https://mini-lms-1.onrender.com",  # your frontend
+    "http://localhost:5173",            # local dev
 ]
+
 CORS_ALLOW_CREDENTIALS = True
 
 # User Model and Default Fields
