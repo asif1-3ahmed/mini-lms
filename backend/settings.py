@@ -6,19 +6,20 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key secret in production!
-# Use environment variable, with a fallback for local development.
-SECRET_KEY = os.environ.get("SECRET_KEY", "your-secret-key")
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-&by_duh@h9@=ao+_@4%m3=17nmvj4ptmpa7dih+*rkr%pj-39-")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    "mini-lms-crh4.onrender.com",
+    "mini-lms-crh4.onrender.com",  # backend render domain
     "localhost",
     "127.0.0.1",
 ]
 
+# --------------------------------------------------------------------
 # Application definition
+# --------------------------------------------------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -26,15 +27,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third-party apps
     "corsheaders",
     "rest_framework",
+    # Local apps
     "accounts",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    # WhiteNoise must be listed immediately after SecurityMiddleware
-    "whitenoise.middleware.WhiteNoiseMiddleware", 
+    # WhiteNoise should be directly after SecurityMiddleware
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -43,56 +46,74 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+ROOT_URLCONF = "backend.urls"
+
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # you can add template directories here if needed
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',  # required by admin
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],  # Add template paths if needed
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-# Root URL Configuration
-ROOT_URLCONF = "backend.urls" # Confirmed to be your main router
 WSGI_APPLICATION = "backend.wsgi.application"
 
-# --- Database Configuration (Critical Production Fix) ---
-# Uses dj-database-url to handle both local SQLite (default) and 
-# PostgreSQL (via DATABASE_URL environment variable on Render).
+# --------------------------------------------------------------------
+# Database configuration (Render + Local SQLite fallback)
+# --------------------------------------------------------------------
 DATABASES = {
     "default": dj_database_url.config(
-        # Fallback to local SQLite if DATABASE_URL is not set (e.g., local dev)
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
         conn_health_checks=True,
     )
 }
 
-# --- Static files (React + Django) ---
-STATIC_URL = "/static/"
-# Where collected files go after python manage.py collectstatic
-STATIC_ROOT = BASE_DIR / "staticfiles"
-# Where collectstatic looks for static files (the Vite/React build output)
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-
-
-# --- CORS ---
-CORS_ALLOWED_ORIGINS = [
-    "https://mini-lms-1.onrender.com",  # your frontend
-    "http://localhost:5173",            # local dev
+# --------------------------------------------------------------------
+# Password validation
+# --------------------------------------------------------------------
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# --------------------------------------------------------------------
+# Internationalization
+# --------------------------------------------------------------------
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+# --------------------------------------------------------------------
+# Static files (CSS, JavaScript, Images)
+# --------------------------------------------------------------------
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# --------------------------------------------------------------------
+# CORS Configuration
+# --------------------------------------------------------------------
+CORS_ALLOWED_ORIGINS = [
+    "https://mini-lms-1.onrender.com",  # frontend render domain
+    "http://localhost:5173",            # local dev
+]
 CORS_ALLOW_CREDENTIALS = True
 
-# User Model and Default Fields
+# --------------------------------------------------------------------
+# Authentication and default model setup
+# --------------------------------------------------------------------
 AUTH_USER_MODEL = "accounts.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
