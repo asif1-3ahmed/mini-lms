@@ -26,7 +26,7 @@ export default function Register() {
   body: JSON.stringify(formData),
 });
 
-      });
+
 
       const data = await response.json();
 
