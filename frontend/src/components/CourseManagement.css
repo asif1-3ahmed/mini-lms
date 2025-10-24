@@ -1,0 +1,391 @@
+/* ===== Container ===== */
+.container {
+  position: relative; /* ensures content above blur */
+  z-index: 1;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 40px auto;
+  background: rgba(255, 255, 255, 0.95); /* subtle white overlay */
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+    position: relative;
+  display: flex;
+  justify-content: center; 
+}
+
+.container:hover {
+  transform: scale(1.01);
+}
+
+/* ===== List Header ===== */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+
+.list-header h2 {
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.list-header button {
+  background: linear-gradient(90deg, #4da2ff, #7bbaff);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.list-header button:hover {
+  transform: scale(1.05);
+}
+
+/* ===== Course Cards ===== */
+.course-cards-container {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+  .course-cards-container {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .course-cards-container {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+}
+
+.course-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+.course-card h3 {
+  margin-bottom: 10px;
+  color: #4da2ff;
+  font-size: 1.3rem;
+}
+
+.course-description {
+  flex-grow: 1;
+  margin-bottom: 15px;
+  font-size: 0.95em;
+  color: #555;
+}
+
+.course-actions {
+  margin-top: 10px;
+  display: flex;
+}
+
+.course-actions button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.course-actions button:first-child {
+  margin-right: 10px;
+  background: #4da2ff;
+  color: #fff;
+}
+
+.course-actions button:first-child:hover {
+  background: #3a8bdc;
+}
+
+.course-actions button:last-child {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+.course-actions button:last-child:hover {
+  background: #e55a5a;
+}
+
+/* ===== Course Form ===== */
+.course-form-card {
+  max-width: 850px;   /* wider box */
+  width: 90%;         /* responsive */
+  margin: 30px auto;
+  padding: 35px 40px; /* spacious padding */
+  background: linear-gradient(145deg, #f8f9fa, #ffffff);
+  border-radius: 20px;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.course-form-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.18);
+}
+
+/* ===== Form Heading ===== */
+.course-form-card h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #4da2ff;
+  margin-bottom: 25px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== Form Groups ===== */
+.course-form-card .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.course-form-card label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* ===== Input Fields ===== */
+.course-form-card input,
+.course-form-card textarea {
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: border 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+.course-form-card input:focus,
+.course-form-card textarea:focus {
+  border-color: #4da2ff;
+  box-shadow: 0 0 8px rgba(77, 162, 255, 0.4);
+  outline: none;
+  transform: scale(1.02);
+}
+
+.course-form-card textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ===== Form Actions ===== */
+.course-form-card .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.course-form-card .form-actions .btn-primary,
+.course-form-card .form-actions button.save-btn {
+  background: linear-gradient(90deg, #4da2ff, #7bbaff);
+  color: #fff;
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(77, 162, 255, 0.3);
+}
+
+.course-form-card .form-actions .btn-primary:hover,
+.course-form-card .form-actions button.save-btn:hover {
+  background: #3a8bdc;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(77, 162, 255, 0.4);
+}
+
+.course-form-card .form-actions .btn,
+.course-form-card .form-actions button.cancel-btn {
+  background-color: #ccc;
+  color: #333;
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.course-form-card .form-actions .btn:hover,
+.course-form-card .form-actions button.cancel-btn:hover {
+  background-color: #b3b3b3;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+/* ===== Container ===== */
+.container {
+  position: relative;
+  z-index: 1;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 40px auto;
+  background: transparent; /* remove white box behind */
+}
+
+/* ===== Course Form Card ===== */
+.course-form-card {
+  max-width: 1000px;   /* make it wider */
+  width: 95%;          /* responsive on smaller screens */
+  margin: 30px auto;
+  padding: 35px 50px;  /* spacious padding */
+  background: linear-gradient(145deg, #f8f9fa, #ffffff);
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.course-form-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Form Heading ===== */
+.course-form-card h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #4da2ff;
+  margin-bottom: 25px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== Form Groups ===== */
+.course-form-card .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.course-form-card label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* ===== Inputs ===== */
+.course-form-card input,
+.course-form-card textarea {
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: border 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+.course-form-card input:focus,
+.course-form-card textarea:focus {
+  border-color: #4da2ff;
+  box-shadow: 0 0 8px rgba(77, 162, 255, 0.4);
+  outline: none;
+  transform: scale(1.02);
+}
+
+.course-form-card textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* ===== Form Actions ===== */
+.course-form-card .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.course-form-card .form-actions .btn-primary {
+  background: linear-gradient(90deg, #4da2ff, #7bbaff);
+  color: #fff;
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.course-form-card .form-actions .btn-primary:hover {
+  background: #3a8bdc;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(77, 162, 255, 0.4);
+}
+
+.course-form-card .form-actions .btn {
+  background-color: #ccc;
+  color: #333;
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.course-form-card .form-actions .btn:hover {
+  background-color: #b3b3b3;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+/* Floating profile at top-right */
+.floating-profile {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 15px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  z-index: 9999; /* above everything */
+}
+
+/* Username text */
+.floating-profile .username {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Profile button */
+.floating-profile .profile-btn {
+  background: linear-gradient(90deg, #4da2ff, #7bbaff);
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.floating-profile .profile-btn:hover {
+  background: #3a8bdc;
+  transform: scale(1.05);
+}

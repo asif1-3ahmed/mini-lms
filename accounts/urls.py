@@ -1,13 +1,15 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import register_user, login_user, UserViewSet, CourseViewSet
+from .views import CourseViewSet, register_user, login_user, logout_user, profile
 
+# Register Course API endpoints with DRF's router
 router = DefaultRouter()
-router.register(r'users', UserViewSet, basename='user')
-router.register(r'courses', CourseViewSet, basename='course')
+router.register(r'courses', CourseViewSet)
 
 urlpatterns = [
-    path('register/', register_user, name='register'),
-    path('login/', login_user, name='login'),
-    path('', include(router.urls)),
+    path('api/register/', register_user, name='register_user'),
+    path('api/login/', login_user, name='login_user'),
+    path('api/logout/', logout_user, name='logout_user'),
+    path('api/profile/', profile, name='user_profile'),
+    path('api/', include(router.urls)),  # Courses API will be available here
 ]

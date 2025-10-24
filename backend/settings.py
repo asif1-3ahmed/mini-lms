@@ -2,15 +2,15 @@ from pathlib import Path
 import os
 import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key secret in production!
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-&by_duh@h9@=ao+_@4%m3=17nmvj4ptmpa7dih+*rkr%pj-39-")
-
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-&by_duh@h9@=ao+_@4%m3=17nmvj4ptmpa7dih+*rkr%pj-39-"
+)
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-
 ALLOWED_HOSTS = [
     "mini-lms-crh4.onrender.com",  # backend render domain
     "localhost",
@@ -18,29 +18,34 @@ ALLOWED_HOSTS = [
 ]
 
 # --------------------------------------------------------------------
-# Application definition
+# Installed apps
 # --------------------------------------------------------------------
 INSTALLED_APPS = [
+    # Django core
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Third-party apps
+
+    # Third-party
     "corsheaders",
     "rest_framework",
+
     # Local apps
     "accounts",
 ]
 
+# --------------------------------------------------------------------
+# Middleware
+# --------------------------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    # WhiteNoise should be directly after SecurityMiddleware
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # must be before CommonMiddleware
+    "django.contrib.sessions.middleware.SessionMiddleware",  # must be before CommonMiddleware
     "django.middleware.common.CommonMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -49,6 +54,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "backend.urls"
 
+# --------------------------------------------------------------------
+# Templates
+# --------------------------------------------------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -68,7 +76,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 # --------------------------------------------------------------------
-# Database configuration (Render + Local SQLite fallback)
+# Database
 # --------------------------------------------------------------------
 DATABASES = {
     "default": dj_database_url.config(
@@ -97,14 +105,14 @@ USE_I18N = True
 USE_TZ = True
 
 # --------------------------------------------------------------------
-# Static files (CSS, JavaScript, Images)
+# Static files
 # --------------------------------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # --------------------------------------------------------------------
-# CORS Configuration
+# CORS configuration
 # --------------------------------------------------------------------
 CORS_ALLOWED_ORIGINS = [
     "https://mini-lms-1.onrender.com",  # frontend render domain
@@ -113,7 +121,25 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 # --------------------------------------------------------------------
-# Authentication and default model setup
+# Session & CSRF settings
+# --------------------------------------------------------------------
+SESSION_COOKIE_SECURE = False  # True in production HTTPS
+CSRF_COOKIE_SECURE = False     # True in production HTTPS
+SESSION_COOKIE_SAMESITE = 'Lax'  # 'None' if cross-site with HTTPS
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# --------------------------------------------------------------------
+# Authentication
 # --------------------------------------------------------------------
 AUTH_USER_MODEL = "accounts.User"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
