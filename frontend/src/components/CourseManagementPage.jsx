@@ -1,60 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import CourseList from './CourseList';
 import CourseForm from './CourseForm';
-import './CourseManagement.css'; 
+import './CourseManagement.css';
+
+const API_BASE = "https://mini-lms-crh4.onrender.com/api/auth";
 
 const CourseManagementPage = () => {
   const [courses, setCourses] = useState([]);
   const [view, setView] = useState('list');
   const [courseToEdit, setCourseToEdit] = useState(null);
-  const [user, setUser] = useState(null); // store logged-in user
+  const [user, setUser] = useState(null);
 
   // Fetch logged-in user
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch('/api/profile/', {
-          credentials: 'include', // important for session-based auth
+        const response = await fetch(`${API_BASE}/profile/`, {
+          credentials: 'include',
         });
         if (response.ok) {
           const data = await response.json();
           setUser(data);
         } else {
-          setUser(null); // not logged in
+          setUser(null);
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
       }
     };
-
     fetchUser();
   }, []);
 
-  // Fetch courses from backend
+  // Fetch courses
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('/api/courses/', {
+        const response = await fetch(`${API_BASE}/courses/`, {
           credentials: 'include',
         });
         if (response.ok) {
           const data = await response.json();
           setCourses(data);
         } else {
-          console.error('Failed to fetch courses');
+          console.error('Failed to fetch courses', response.status);
         }
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
     };
-
     fetchCourses();
   }, []);
 
-  // Add new course
+  // Add course
   const handleAddCourse = async (newCourseData) => {
     try {
-      const response = await fetch('/api/courses/', {
+      const response = await fetch(`${API_BASE}/courses/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -65,17 +65,17 @@ const CourseManagementPage = () => {
         setCourses(prev => [...prev, data]);
         setView('list');
       } else {
-        console.error('Failed to add course');
+        console.error('Failed to add course', response.status);
       }
     } catch (error) {
       console.error('Error adding course:', error);
     }
   };
 
-  // Edit existing course
+  // Edit course
   const handleEditCourse = async (updatedCourseData) => {
     try {
-      const response = await fetch(`/api/courses/${updatedCourseData.id}/`, {
+      const response = await fetch(`${API_BASE}/courses/${updatedCourseData.id}/`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -87,7 +87,7 @@ const CourseManagementPage = () => {
         setView('list');
         setCourseToEdit(null);
       } else {
-        console.error('Failed to update course');
+        console.error('Failed to update course', response.status);
       }
     } catch (error) {
       console.error('Error updating course:', error);
@@ -96,17 +96,17 @@ const CourseManagementPage = () => {
 
   // Delete course
   const handleDeleteCourse = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this course? This action cannot be undone.')) return;
+    if (!window.confirm('Are you sure you want to delete this course?')) return;
 
     try {
-      const response = await fetch(`/api/courses/${id}/`, {
+      const response = await fetch(`${API_BASE}/courses/${id}/`, {
         method: 'DELETE',
         credentials: 'include',
       });
-      if (response.ok) {
+      if (response.ok || response.status === 204) {
         setCourses(prev => prev.filter(c => c.id !== id));
       } else {
-        console.error('Failed to delete course');
+        console.error('Failed to delete course', response.status);
       }
     } catch (error) {
       console.error('Error deleting course:', error);
@@ -114,8 +114,10 @@ const CourseManagementPage = () => {
   };
 
   const renderContent = () => {
-    if (view === 'add') return <CourseForm onSubmit={handleAddCourse} onCancel={() => setView('list')} />;
-    if (view === 'edit' && courseToEdit) return <CourseForm course={courseToEdit} onSubmit={handleEditCourse} onCancel={() => setView('list')} />;
+    if (view === 'add')
+      return <CourseForm onSubmit={handleAddCourse} onCancel={() => setView('list')} />;
+    if (view === 'edit' && courseToEdit)
+      return <CourseForm course={courseToEdit} onSubmit={handleEditCourse} onCancel={() => setView('list')} />;
     return (
       <CourseList
         courses={courses}
@@ -141,9 +143,7 @@ const CourseManagementPage = () => {
         )}
       </div>
 
-      <div className="container">
-        {renderContent()}
-      </div>
+      <div className="container">{renderContent()}</div>
     </>
   );
 };

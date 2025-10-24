@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './CourseManagement.css';
 
 const CourseForm = ({ course, onSubmit, onCancel }) => {
@@ -9,6 +9,9 @@ const CourseForm = ({ course, onSubmit, onCancel }) => {
     description: course ? course.description : '',
   });
 
+  // ✅ Set your API base — adjust if your backend URL changes
+  const API_BASE = "https://mini-lms-crh4.onrender.com/api/auth";
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -17,27 +20,34 @@ const CourseForm = ({ course, onSubmit, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const method = formData.id ? 'PUT' : 'POST';
-    const url = formData.id ? `/api/courses/${formData.id}/` : '/api/courses/';
+    const isEditing = !!formData.id;
+    const method = isEditing ? 'PUT' : 'POST';
+    const url = isEditing
+      ? `${API_BASE}/courses/${formData.id}/`
+      : `${API_BASE}/courses/`;
 
     try {
       const response = await fetch(url, {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // keep for CSRF/authenticated sessions
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         const updatedCourse = await response.json();
         onSubmit(updatedCourse);
-        alert(`${formData.id ? 'Updated' : 'Created'} course successfully.`);
+        alert(`${isEditing ? 'Updated' : 'Created'} course successfully.`);
       } else {
-        alert('Failed to submit course');
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Failed response:", errorData);
+        alert(`Failed to ${isEditing ? 'update' : 'create'} course.`);
       }
     } catch (error) {
       console.error('Error submitting course:', error);
-      alert('Error submitting course');
+      alert('Error submitting course. Check console for details.');
     }
   };
 
@@ -58,6 +68,7 @@ const CourseForm = ({ course, onSubmit, onCancel }) => {
             required
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="instructor">Instructor</label>
           <input
@@ -69,6 +80,7 @@ const CourseForm = ({ course, onSubmit, onCancel }) => {
             required
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="description">Description</label>
           <textarea
@@ -78,13 +90,19 @@ const CourseForm = ({ course, onSubmit, onCancel }) => {
             value={formData.description}
             onChange={handleChange}
             required
-          ></textarea>
+          />
         </div>
+
         <div className="form-actions">
           <button type="submit" className="btn btn-primary">
             {isEditing ? 'Update Course' : 'Create Course'}
           </button>
-          <button type="button" className="btn" onClick={onCancel} style={{ backgroundColor: '#ccc', color: '#333' }}>
+          <button
+            type="button"
+            className="btn"
+            onClick={onCancel}
+            style={{ backgroundColor: '#ccc', color: '#333' }}
+          >
             Cancel
           </button>
         </div>

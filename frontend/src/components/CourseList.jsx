@@ -2,21 +2,23 @@ import React, { useEffect, useState } from 'react';
 import CourseItem from './CourseItem';
 import './CourseManagement.css';
 
-const CourseList = ({ onEdit, onDelete, onAdd }) => {
+const API_BASE = "https://mini-lms-crh4.onrender.com/api/auth";
+
+const CourseList = ({ onEdit, onAdd }) => {
   const [courses, setCourses] = useState([]);
 
   // Fetch courses from backend
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('/api/courses/', {
-          credentials: 'include', // Important for session-based auth
+        const response = await fetch(`${API_BASE}/courses/`, {
+          credentials: 'include', // for session-based auth
         });
         if (response.ok) {
           const data = await response.json();
           setCourses(data);
         } else {
-          console.error('Failed to fetch courses');
+          console.error('Failed to fetch courses', response.status);
         }
       } catch (error) {
         console.error('Error fetching courses:', error);
@@ -26,23 +28,27 @@ const CourseList = ({ onEdit, onDelete, onAdd }) => {
     fetchCourses();
   }, []);
 
+  // Handle deleting a course
   const handleDeleteCourse = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this course? This action cannot be undone.')) return;
+    if (!window.confirm('Are you sure you want to delete this course?')) return;
 
     try {
-      const response = await fetch(`/api/courses/${id}/`, {
+      const response = await fetch(`${API_BASE}/courses/${id}/`, {
         method: 'DELETE',
         credentials: 'include',
       });
 
-      if (response.ok) {
+      if (response.ok || response.status === 204) {
         setCourses((prev) => prev.filter((course) => course.id !== id));
+        alert('Course deleted successfully.');
       } else {
-        alert('Failed to delete course');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Failed to delete course:', errorData);
+        alert('Failed to delete course.');
       }
     } catch (error) {
       console.error('Error deleting course:', error);
-      alert('Error deleting course');
+      alert('Error deleting course.');
     }
   };
 
@@ -60,8 +66,8 @@ const CourseList = ({ onEdit, onDelete, onAdd }) => {
             <CourseItem
               key={course.id}
               course={course}
-              onEdit={() => onEdit(course)}
-              onDelete={() => handleDeleteCourse(course.id)}
+              onEdit={onEdit}
+              onDelete={handleDeleteCourse}
             />
           ))
         ) : (
