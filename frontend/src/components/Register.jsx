@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "./Register.css";
+import "./Register.css"; // Ensure the path is correct
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -20,24 +20,23 @@ export default function Register() {
     setStatus({ message: "🔵 Checking user availability...", type: "info" });
 
     try {
-      // Send POST request to the backend
       const response = await fetch("https://mini-lms-crh4.onrender.com/api/auth/register/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),  // Sending username, email, and password
+        body: JSON.stringify(formData),  // Ensure you are sending the correct fields: username, email, password
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // If registration is successful
         setStatus({
           message: "🟢 Registration successful! Redirecting...",
           type: "success",
         });
-        setTimeout(() => navigate("/login"), 1500); // Redirect to login after 1.5 seconds
+        setTimeout(() => navigate("/login"), 1500); // Redirect after 1.5 seconds
       } else {
-        // Handles duplicate username/email or other errors from the backend response
+        // Handle backend response errors
+        console.log("Backend response:", data); // Log full response to debug
         if (data.message?.toLowerCase().includes("exists")) {
           setStatus({
             message: "🔴 Username or email already registered!",
@@ -66,7 +65,7 @@ export default function Register() {
           type="text"
           name="username"
           placeholder="Username"
-          value={formData.username}  // Bind username to formData
+          value={formData.username}
           onChange={handleChange}
           required
         />
@@ -74,7 +73,7 @@ export default function Register() {
           type="email"
           name="email"
           placeholder="Email"
-          value={formData.email}  // Bind email to formData
+          value={formData.email}
           onChange={handleChange}
           required
         />
@@ -82,14 +81,14 @@ export default function Register() {
           type="password"
           name="password"
           placeholder="Password"
-          value={formData.password}  // Bind password to formData
+          value={formData.password}
           onChange={handleChange}
           required
         />
         <button type="submit">Register</button>
       </form>
 
-      {/* Status message showing errors or success */}
+      {/* Display status messages */}
       {status.message && (
         <div className={`status-message ${status.type}`}>
           {status.message}
