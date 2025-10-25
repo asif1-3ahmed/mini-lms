@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API from "../api"; // use centralized axios instance
+import API from "../api"; // centralized axios instance
 import "./Login.css";
-import axios from "axios";
 
 export default function Login() {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -18,22 +17,32 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await API.post("/login/", formData);
-      const data = response.data;
+      // Explicitly send username and password as JSON
+      const response = await API.post("/login/", {
+        username: formData.username,
+        password: formData.password,
+      }, {
+        headers: { "Content-Type": "application/json" },
+      });
 
+      // If login successful
       if (response.status === 200) {
-        // Save token and user info
+        const data = response.data;
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.username);
-        localStorage.setItem("role", data.role);
+        localStorage.setItem("role", data.role || "student");
 
-        navigate("/courses");
-      } else {
-        alert(data.message || "Invalid credentials.");
+        navigate("/courses"); // redirect to courses page
       }
     } catch (error) {
+      // DRF usually returns detailed error messages
       console.error("Login error:", error);
-      alert(error.response?.data?.message || "Login failed. Server error.");
+      if (error.response && error.response.data) {
+        const msg = error.response.data.detail || error.response.data.message || "Invalid credentials.";
+        alert(msg);
+      } else {
+        alert("Login failed. Server unreachable.");
+      }
     } finally {
       setLoading(false);
     }
