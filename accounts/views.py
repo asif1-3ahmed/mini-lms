@@ -11,15 +11,22 @@ User = get_user_model()
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
-    # Extract email from request data and validate it
     email = request.data.get('email')
     username = request.data.get('username')
     password = request.data.get('password')
 
-    # Add more validation as needed (for example, validate if email exists)
-    if not email or not username or not password:
-        return Response({"message": "All fields are required"}, status=status.HTTP_400_BAD_REQUEST)
+    # Check if email and username are already taken
+    if User.objects.filter(email=email).exists():
+        return Response({"message": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
     
+    if User.objects.filter(username=username).exists():
+        return Response({"message": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Check if the fields are provided
+    if not email or not username or not password:
+        return Response({"message": "All fields are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Proceed with user creation
     serializer = UserSerializer(data=request.data)
 
     if serializer.is_valid():
@@ -30,7 +37,8 @@ def register_user(request):
             'token': token.key,
             'username': user.username,
             'role': user.role,
-            'email': user.email,  # Include email in response if needed
+            'email': user.email,
         }, status=status.HTTP_201_CREATED)
-    
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
