@@ -1,30 +1,18 @@
-import React from 'react';
-import './CourseManagement.css';
-
-const API_BASE = "https://mini-lms-crh4.onrender.com/api/auth";
+import React from "react";
+import API from "../api";
+import "./CourseManagement.css";
 
 const CourseItem = ({ course, onEdit, onDelete }) => {
-  // Handles deleting a course by calling the backend
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this course?")) return;
 
     try {
-      const response = await fetch(`${API_BASE}/courses/${id}/`, {
-        method: 'DELETE',
-        credentials: 'include', // include cookies/session for authentication
-      });
-
-      if (response.ok || response.status === 204) {
-        onDelete(id); // remove course from parent state
-        alert('Course deleted successfully.');
-      } else {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('Delete failed:', errorData);
-        alert('Failed to delete course.');
-      }
+      await API.delete(`/courses/${course.id}/`);
+      onDelete(course.id);
+      alert("Course deleted successfully.");
     } catch (error) {
-      console.error('Error deleting course:', error);
-      alert('Error deleting course.');
+      console.error("Delete course error:", error);
+      alert("Failed to delete course.");
     }
   };
 
@@ -34,14 +22,14 @@ const CourseItem = ({ course, onEdit, onDelete }) => {
       <p><strong>Instructor:</strong> {course.instructor}</p>
       <p className="course-description">
         {course.description.length > 150
-          ? course.description.substring(0, 150) + '...'
+          ? course.description.substring(0, 150) + "..."
           : course.description}
       </p>
       <div className="course-actions">
         <button className="btn btn-primary" onClick={() => onEdit(course)}>
           Edit
         </button>
-        <button className="btn btn-danger" onClick={() => handleDelete(course.id)}>
+        <button className="btn btn-danger" onClick={handleDelete}>
           Delete
         </button>
       </div>

@@ -1,10 +1,10 @@
-# accounts/views.py
-from django.contrib.auth import authenticate, get_user_model
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate, get_user_model
+from .serializers import UserSerializer
 
 User = get_user_model()
 
@@ -12,29 +12,24 @@ User = get_user_model()
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
-    data = request.data
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
-    role = data.get('role', 'student')
-
-    if User.objects.filter(username=username).exists():
-        return Response({'message': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
-
-    user = User.objects.create_user(username=username, email=email, password=password, role=role)
-    return Response({
-        'message': 'User registered successfully',
-        'username': user.username,
-        'role': user.role
-    }, status=status.HTTP_201_CREATED)
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({
+            'message': 'User registered successfully',
+            'token': token.key,
+            'username': user.username,
+            'role': user.role,
+        }, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_user(request):
-    data = request.data
-    username = data.get('username')
-    password = data.get('password')
+    username = request.data.get('username')
+    password = request.data.get('password')
 
     user = authenticate(username=username, password=password)
     if user:
@@ -52,8 +47,7 @@ def login_user(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_user(request):
-    user = request.user
-    Token.objects.filter(user=user).delete()  # optional: delete token on logout
+    Token.objects.filter(user=request.user).delete()
     return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
 
 
@@ -65,5 +59,5 @@ def profile(request):
         'user_id': user.id,
         'username': user.username,
         'email': user.email,
-        'role': getattr(user, 'role', None),
+        'role': user.role,
     })

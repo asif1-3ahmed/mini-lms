@@ -1,33 +1,42 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import API from "../api"; // use centralized axios instance
 import "./Login.css";
 
 export default function Login() {
   const [formData, setFormData] = useState({ username: "", password: "" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await API.post("/login/", formData); // using your axios API instance
-    const data = response.data;
+    e.preventDefault();
+    setLoading(true);
 
-    if (response.status === 200) {
-      localStorage.setItem("token", data.token);  // save token
-      localStorage.setItem("username", data.username);
-      navigate("/courses");
-    } else {
-      alert(data.message || "Invalid credentials");
+    try {
+      const response = await API.post("/login/", formData);
+      const data = response.data;
+
+      if (response.status === 200) {
+        // Save token and user info
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("role", data.role);
+
+        navigate("/courses");
+      } else {
+        alert(data.message || "Invalid credentials.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert(error.response?.data?.message || "Login failed. Server error.");
+    } finally {
+      setLoading(false);
     }
-  } catch {
-    alert("Backend not reachable!");
-  }
-};
-
+  };
 
   return (
     <div className="form-container">
@@ -37,6 +46,7 @@ export default function Login() {
           type="text"
           name="username"
           placeholder="Username"
+          value={formData.username}
           onChange={handleChange}
           required
         />
@@ -44,10 +54,13 @@ export default function Login() {
           type="password"
           name="password"
           placeholder="Password"
+          value={formData.password}
           onChange={handleChange}
           required
         />
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </form>
 
       <p>

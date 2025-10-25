@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     # Third-party
     "corsheaders",
     "rest_framework",
+    "rest_framework.authtoken",
 
     # Local apps
     "accounts",
@@ -117,19 +118,20 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # CORS & CSRF
 # --------------------------------------------------------------------
 CORS_ALLOWED_ORIGINS = [
-    "https://mini-lms-1.onrender.com",  # frontend Render domain
+    "https://mini-lms-1.onrender.com",  # your frontend Render domain
     "http://localhost:5173",            # local dev
 ]
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "https://mini-lms-1.onrender.com",
-    "https://mini-lms-crh4.onrender.com",
+    "https://mini-lms-crh4.onrender.com",  # your backend Render domain
     "http://localhost:5173",
 ]
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# Secure cookies in production
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SAMESITE = "None"
 CSRF_COOKIE_SAMESITE = "None"
 
@@ -137,17 +139,16 @@ CSRF_COOKIE_SAMESITE = "None"
 # AUTHENTICATION
 # --------------------------------------------------------------------
 AUTH_USER_MODEL = "accounts.User"
-INSTALLED_APPS += [
-    "rest_framework.authtoken",
-]
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
+        "rest_framework.permissions.AllowAny",  # switch back to IsAuthenticated later
     ],
 }
+
 # --------------------------------------------------------------------
 # DEFAULT AUTO FIELD
 # --------------------------------------------------------------------

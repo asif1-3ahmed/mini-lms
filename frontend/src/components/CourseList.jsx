@@ -1,56 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import CourseItem from './CourseItem';
-import './CourseManagement.css';
-
-const API_BASE = "https://mini-lms-crh4.onrender.com/api/auth";
+import React, { useEffect, useState } from "react";
+import CourseItem from "./CourseItem";
+import API from "../api";
+import "./CourseManagement.css";
 
 const CourseList = ({ onEdit, onAdd }) => {
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch courses from backend
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch(`${API_BASE}/courses/`, {
-          credentials: 'include', // for session-based auth
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setCourses(data);
-        } else {
-          console.error('Failed to fetch courses', response.status);
-        }
+        const response = await API.get("/courses/");
+        setCourses(response.data);
       } catch (error) {
-        console.error('Error fetching courses:', error);
+        console.error("Fetch courses error:", error);
+        alert("Failed to load courses.");
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchCourses();
   }, []);
 
-  // Handle deleting a course
-  const handleDeleteCourse = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this course?')) return;
-
-    try {
-      const response = await fetch(`${API_BASE}/courses/${id}/`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (response.ok || response.status === 204) {
-        setCourses((prev) => prev.filter((course) => course.id !== id));
-        alert('Course deleted successfully.');
-      } else {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('Failed to delete course:', errorData);
-        alert('Failed to delete course.');
-      }
-    } catch (error) {
-      console.error('Error deleting course:', error);
-      alert('Error deleting course.');
-    }
+  const handleDeleteCourse = (id) => {
+    setCourses((prev) => prev.filter((course) => course.id !== id));
   };
+
+  if (loading) return <p>Loading courses...</p>;
 
   return (
     <div className="course-list-page">
@@ -61,7 +37,7 @@ const CourseList = ({ onEdit, onAdd }) => {
         </button>
       </div>
       <div className="course-cards-container">
-        {courses.length > 0 ? (
+        {courses.length ? (
           courses.map((course) => (
             <CourseItem
               key={course.id}

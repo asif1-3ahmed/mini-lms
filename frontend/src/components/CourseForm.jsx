@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
-import './CourseManagement.css';
+import React, { useState } from "react";
+import API from "../api"; // import your centralized axios instance
+import "./CourseManagement.css";
 
 const CourseForm = ({ course, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
-    id: course ? course.id : null,
-    title: course ? course.title : '',
-    instructor: course ? course.instructor : '',
-    description: course ? course.description : '',
+    title: course?.title || "",
+    instructor: course?.instructor || "",
+    description: course?.description || "",
   });
-
-  // ✅ Set your API base — adjust if your backend URL changes
-  const API_BASE = "https://mini-lms-crh4.onrender.com/api/auth";
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,72 +17,51 @@ const CourseForm = ({ course, onSubmit, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const isEditing = !!formData.id;
-    const method = isEditing ? 'PUT' : 'POST';
-    const url = isEditing
-      ? `${API_BASE}/courses/${formData.id}/`
-      : `${API_BASE}/courses/`;
+    setLoading(true);
 
     try {
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // keep for CSRF/authenticated sessions
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const updatedCourse = await response.json();
-        onSubmit(updatedCourse);
-        alert(`${isEditing ? 'Updated' : 'Created'} course successfully.`);
+      let response;
+      if (course) {
+        response = await API.put(`/courses/${course.id}/`, formData);
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        console.error("Failed response:", errorData);
-        alert(`Failed to ${isEditing ? 'update' : 'create'} course.`);
+        response = await API.post("/courses/", formData);
       }
+
+      onSubmit(response.data);
+      alert(`${course ? "Updated" : "Created"} course successfully.`);
     } catch (error) {
-      console.error('Error submitting course:', error);
-      alert('Error submitting course. Check console for details.');
+      console.error("Course submit error:", error);
+      alert("Failed to submit course. Check console for details.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const isEditing = !!course;
-
   return (
     <div className="course-form-card">
-      <h2>{isEditing ? 'Edit Course' : 'Add New Course'}</h2>
+      <h2>{course ? "Edit Course" : "Add New Course"}</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="title">Course Title</label>
+          <label>Course Title</label>
           <input
-            type="text"
-            id="title"
             name="title"
             value={formData.title}
             onChange={handleChange}
             required
           />
         </div>
-
         <div className="form-group">
-          <label htmlFor="instructor">Instructor</label>
+          <label>Instructor</label>
           <input
-            type="text"
-            id="instructor"
             name="instructor"
             value={formData.instructor}
             onChange={handleChange}
             required
           />
         </div>
-
         <div className="form-group">
-          <label htmlFor="description">Description</label>
+          <label>Description</label>
           <textarea
-            id="description"
             name="description"
             rows="5"
             value={formData.description}
@@ -92,17 +69,11 @@ const CourseForm = ({ course, onSubmit, onCancel }) => {
             required
           />
         </div>
-
         <div className="form-actions">
-          <button type="submit" className="btn btn-primary">
-            {isEditing ? 'Update Course' : 'Create Course'}
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? "Saving..." : course ? "Update Course" : "Create Course"}
           </button>
-          <button
-            type="button"
-            className="btn"
-            onClick={onCancel}
-            style={{ backgroundColor: '#ccc', color: '#333' }}
-          >
+          <button type="button" className="btn" onClick={onCancel}>
             Cancel
           </button>
         </div>
