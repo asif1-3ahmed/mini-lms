@@ -6,6 +6,7 @@ import "./Login.css"; // reuse same styles
 export default function Register() {
   const [formData, setFormData] = useState({
     username: "",
+    email: "", // Added email field
     password: "",
     confirmPassword: "",
   });
@@ -19,6 +20,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Password validation
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
@@ -31,6 +33,7 @@ export default function Register() {
         "/register/",
         {
           username: formData.username,
+          email: formData.email,  // Sending email in the request
           password: formData.password,
         },
         {
@@ -51,6 +54,7 @@ export default function Register() {
         let msg = "Registration failed.";
         if (messages.username) msg = `Username: ${messages.username.join(", ")}`;
         else if (messages.password) msg = `Password: ${messages.password.join(", ")}`;
+        else if (messages.email) msg = `Email: ${messages.email.join(", ")}`;
         else if (messages.detail) msg = messages.detail;
 
         alert(msg);
@@ -71,6 +75,14 @@ export default function Register() {
           name="username"
           placeholder="Username"
           value={formData.username}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="email"  // Email input
+          name="email"
+          placeholder="Email"
+          value={formData.email}
           onChange={handleChange}
           required
         />
