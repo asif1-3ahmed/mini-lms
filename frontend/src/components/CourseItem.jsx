@@ -1,7 +1,7 @@
 import React from 'react';
 import './CourseManagement.css';
 
-const API_BASE = "https://mini-lms-crh4.onrender.com/api";
+const API_BASE = "https://mini-lms-crh4.onrender.com/api/auth";
 
 const CourseItem = ({ course, onEdit, onDelete }) => {
   // Handles deleting a course by calling the backend
