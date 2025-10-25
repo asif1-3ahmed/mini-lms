@@ -2,23 +2,27 @@ from pathlib import Path
 import os
 import dj_database_url
 
-# Build paths
+# --------------------------------------------------------------------
+# BASE DIRECTORY
+# --------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# --------------------------------------------------------------------
 # SECURITY
+# --------------------------------------------------------------------
 SECRET_KEY = os.environ.get(
     "SECRET_KEY",
     "django-insecure-&by_duh@h9@=ao+_@4%m3=17nmvj4ptmpa7dih+*rkr%pj-39-"
 )
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = [
-    "mini-lms-crh4.onrender.com",  # backend render domain
+    "mini-lms-crh4.onrender.com",  # backend Render domain
     "localhost",
     "127.0.0.1",
 ]
 
 # --------------------------------------------------------------------
-# Installed apps
+# INSTALLED APPS
 # --------------------------------------------------------------------
 INSTALLED_APPS = [
     # Django core
@@ -35,16 +39,17 @@ INSTALLED_APPS = [
 
     # Local apps
     "accounts",
+    "courses",  # <-- added your new courses app
 ]
 
 # --------------------------------------------------------------------
-# Middleware
+# MIDDLEWARE
 # --------------------------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",  # must be before CommonMiddleware
-    "django.contrib.sessions.middleware.SessionMiddleware",  # must be before CommonMiddleware
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -55,12 +60,12 @@ MIDDLEWARE = [
 ROOT_URLCONF = "backend.urls"
 
 # --------------------------------------------------------------------
-# Templates
+# TEMPLATES
 # --------------------------------------------------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],  # Add template paths if needed
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -76,7 +81,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 # --------------------------------------------------------------------
-# Database
+# DATABASE
 # --------------------------------------------------------------------
 DATABASES = {
     "default": dj_database_url.config(
@@ -87,7 +92,7 @@ DATABASES = {
 }
 
 # --------------------------------------------------------------------
-# Password validation
+# PASSWORD VALIDATION
 # --------------------------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -97,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # --------------------------------------------------------------------
-# Internationalization
+# INTERNATIONALIZATION
 # --------------------------------------------------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
@@ -105,37 +110,34 @@ USE_I18N = True
 USE_TZ = True
 
 # --------------------------------------------------------------------
-# Static files
+# STATIC FILES
 # --------------------------------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # --------------------------------------------------------------------
-# CORS configuration
+# CORS & CSRF
 # --------------------------------------------------------------------
 CORS_ALLOWED_ORIGINS = [
-    "https://mini-lms-1.onrender.com",  # frontend render domain
+    "https://mini-lms-1.onrender.com",  # frontend Render domain
     "http://localhost:5173",            # local dev
 ]
 CORS_ALLOW_CREDENTIALS = True
-
 
 CSRF_TRUSTED_ORIGINS = [
     "https://mini-lms-1.onrender.com",
     "https://mini-lms-crh4.onrender.com",
     "http://localhost:5173",
 ]
-# --------------------------------------------------------------------
-# Session & CSRF settings
-# --------------------------------------------------------------------
+
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = "None"
 CSRF_COOKIE_SAMESITE = "None"
 
 # --------------------------------------------------------------------
-# Authentication
+# AUTHENTICATION
 # --------------------------------------------------------------------
 AUTH_USER_MODEL = "accounts.User"
 
@@ -148,4 +150,7 @@ REST_FRAMEWORK = {
     ],
 }
 
+# --------------------------------------------------------------------
+# DEFAULT AUTO FIELD
+# --------------------------------------------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
