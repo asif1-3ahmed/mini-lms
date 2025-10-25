@@ -10,6 +10,20 @@ from .serializers import UserSerializer
 
 User = get_user_model()
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    """
+    Returns the profile data of the currently authenticated user.
+    """
+    user = request.user
+    return Response({
+        'user_id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'role': getattr(user, 'role', None),  # If you have a custom role field
+    })
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_user(request):
