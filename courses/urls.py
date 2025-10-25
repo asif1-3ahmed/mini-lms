@@ -1,8 +1,7 @@
-# courses/urls.py
 from django.urls import path
 from .views import CourseListCreateView, CourseDetailView
 
 urlpatterns = [
-    path('courses/', CourseListCreateView.as_view(), name='course-list-create'),
-    path('courses/<int:pk>/', CourseDetailView.as_view(), name='course-detail'),
+    path("", CourseListCreateView.as_view(), name="course-list-create"),  # GET/POST
+    path("<int:pk>/", CourseDetailView.as_view(), name="course-detail"),   # GET/PUT/DELETE
 ]
