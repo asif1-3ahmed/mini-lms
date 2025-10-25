@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import CourseItem from './CourseItem';
 import './CourseManagement.css';
 
-const API_BASE = "https://mini-lms-crh4.onrender.com/api/auth";
+const API_BASE = "https://mini-lms-crh4.onrender.com/api";
 
 const CourseList = ({ onEdit, onAdd }) => {
   const [courses, setCourses] = useState([]);

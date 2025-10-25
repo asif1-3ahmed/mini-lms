@@ -10,7 +10,7 @@ const CourseForm = ({ course, onSubmit, onCancel }) => {
   });
 
   // ✅ Set your API base — adjust if your backend URL changes
-  const API_BASE = "https://mini-lms-crh4.onrender.com/api/auth";
+  const API_BASE = "https://mini-lms-crh4.onrender.com/api";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
