@@ -3,7 +3,7 @@ import CourseList from './CourseList';
 import CourseForm from './CourseForm';
 import './CourseManagement.css';
 
-const API_BASE = "https://mini-lms-crh4.onrender.com/api/auth";
+const API_BASE = "https://mini-lms-crh4.onrender.com/api";
 
 const CourseManagementPage = () => {
   const [courses, setCourses] = useState([]);
