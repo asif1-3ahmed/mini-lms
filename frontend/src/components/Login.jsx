@@ -11,29 +11,23 @@ export default function Login() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("https://mini-lms-crh4.onrender.com/api/auth/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+  e.preventDefault();
+  try {
+    const response = await API.post("/login/", formData); // using your axios API instance
+    const data = response.data;
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // Save username or token if needed
-        localStorage.setItem("username", formData.username);
-
-        // ✅ Redirect to Course Management Page
-        navigate("/courses");
-      } else {
-        alert(data.message || "Invalid credentials");
-      }
-    } catch {
-      alert("Backend not reachable!");
+    if (response.status === 200) {
+      localStorage.setItem("token", data.token);  // save token
+      localStorage.setItem("username", data.username);
+      navigate("/courses");
+    } else {
+      alert(data.message || "Invalid credentials");
     }
-  };
+  } catch {
+    alert("Backend not reachable!");
+  }
+};
+
 
   return (
     <div className="form-container">
