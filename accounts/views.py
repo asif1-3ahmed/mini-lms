@@ -11,6 +11,22 @@ from .serializers import UserSerializer
 User = get_user_model()
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_user(request):
+    """
+    Handles user logout.
+    - Deletes the user’s authentication token.
+    - Invalidates the session to log the user out.
+    """
+    try:
+        # Delete the token on logout
+        Token.objects.filter(user=request.user).delete()
+        logout(request)  # Django's built-in logout to clear the session
+        return Response({"message": "Logged out successfully"}, status=200)
+    except Exception as e:
+        return Response({"message": f"Error: {str(e)}"}, status=400)
+        
+@api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
     """
