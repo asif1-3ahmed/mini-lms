@@ -10,6 +10,15 @@ body {
   align-items: center;
   position: relative;
 }
+.error-message {
+  color: #ff4d4f;
+  background-color: #ffecec;
+  border: 1px solid #ffcccc;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
 
 body::before {
   content: "";
