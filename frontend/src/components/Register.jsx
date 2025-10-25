@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api"; // centralized axios instance
-import "./Login.css"; // reuse the same styles
-import axios from "axios";
-
+import "./Login.css"; // reuse same styles
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -29,10 +27,16 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await API.post("/register/", {
-        username: formData.username,
-        password: formData.password,
-      });
+      const response = await API.post(
+        "/register/",
+        {
+          username: formData.username,
+          password: formData.password,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       if (response.status === 201) {
         alert("Registration successful! Please login.");
@@ -40,10 +44,19 @@ export default function Register() {
       }
     } catch (error) {
       console.error("Registration error:", error);
-      alert(
-        error.response?.data?.message ||
-          "Registration failed. Username might already exist."
-      );
+
+      // Better error handling for DRF
+      if (error.response && error.response.data) {
+        const messages = error.response.data;
+        let msg = "Registration failed.";
+        if (messages.username) msg = `Username: ${messages.username.join(", ")}`;
+        else if (messages.password) msg = `Password: ${messages.password.join(", ")}`;
+        else if (messages.detail) msg = messages.detail;
+
+        alert(msg);
+      } else {
+        alert("Registration failed. Server error.");
+      }
     } finally {
       setLoading(false);
     }
