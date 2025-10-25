@@ -120,13 +120,19 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://mini-lms-1.onrender.com",
+    "https://mini-lms-crh4.onrender.com",
+    "http://localhost:5173",
+]
 # --------------------------------------------------------------------
 # Session & CSRF settings
 # --------------------------------------------------------------------
-SESSION_COOKIE_SECURE = False  # True in production HTTPS
-CSRF_COOKIE_SECURE = False     # True in production HTTPS
-SESSION_COOKIE_SAMESITE = 'Lax'  # 'None' if cross-site with HTTPS
-CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SAMESITE = "None"
 
 # --------------------------------------------------------------------
 # Authentication
