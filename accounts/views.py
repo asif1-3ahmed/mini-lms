@@ -12,6 +12,7 @@ User = get_user_model()
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
+    print("Incoming registration data:", request.data)  # <-- debug
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
@@ -21,7 +22,9 @@ def register_user(request):
             'token': token.key,
             'username': user.username,
         }, status=status.HTTP_201_CREATED)
+    print("Serializer errors:", serializer.errors)  # <-- debug
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['POST'])
