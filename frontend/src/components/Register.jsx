@@ -1,68 +1,60 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API from "../api"; // centralized axios instance
-import "./Login.css"; // reuse same styles
+import "./Register.css";
 
 export default function Register() {
   const [formData, setFormData] = useState({
     username: "",
-    email: "", // Added email field
+    email: "",
     password: "",
-    confirmPassword: "",
   });
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState({ message: "", type: "" });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Password validation
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-
-    setLoading(true);
+    setStatus({ message: "🔵 Checking user availability...", type: "info" });
 
     try {
-      const response = await API.post(
-        "/register/",
-        {
-          username: formData.username,
-          email: formData.email,  // Sending email in the request
-          password: formData.password,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      // Send POST request to the backend
+      const response = await fetch("https://mini-lms-crh4.onrender.com/api/auth/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),  // Sending username, email, and password
+      });
 
-      if (response.status === 201) {
-        alert("Registration successful! Please login.");
-        navigate("/login");
+      const data = await response.json();
+
+      if (response.ok) {
+        // If registration is successful
+        setStatus({
+          message: "🟢 Registration successful! Redirecting...",
+          type: "success",
+        });
+        setTimeout(() => navigate("/login"), 1500); // Redirect to login after 1.5 seconds
+      } else {
+        // Handles duplicate username/email or other errors from the backend response
+        if (data.message?.toLowerCase().includes("exists")) {
+          setStatus({
+            message: "🔴 Username or email already registered!",
+            type: "error",
+          });
+        } else {
+          setStatus({
+            message: "🔴 Registration failed. Please try again.",
+            type: "error",
+          });
+        }
       }
     } catch (error) {
-      console.error("Registration error:", error);
-
-      // Better error handling for DRF
-      if (error.response && error.response.data) {
-        const messages = error.response.data;
-        let msg = "Registration failed.";
-        if (messages.username) msg = `Username: ${messages.username.join(", ")}`;
-        else if (messages.password) msg = `Password: ${messages.password.join(", ")}`;
-        else if (messages.email) msg = `Email: ${messages.email.join(", ")}`;
-        else if (messages.detail) msg = messages.detail;
-
-        alert(msg);
-      } else {
-        alert("Registration failed. Server error.");
-      }
-    } finally {
-      setLoading(false);
+      setStatus({
+        message: "⚠️ Server unreachable. Please try again later.",
+        type: "error",
+      });
     }
   };
 
@@ -74,15 +66,15 @@ export default function Register() {
           type="text"
           name="username"
           placeholder="Username"
-          value={formData.username}
+          value={formData.username}  // Bind username to formData
           onChange={handleChange}
           required
         />
         <input
-          type="email"  // Email input
+          type="email"
           name="email"
           placeholder="Email"
-          value={formData.email}
+          value={formData.email}  // Bind email to formData
           onChange={handleChange}
           required
         />
@@ -90,22 +82,19 @@ export default function Register() {
           type="password"
           name="password"
           placeholder="Password"
-          value={formData.password}
+          value={formData.password}  // Bind password to formData
           onChange={handleChange}
           required
         />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? "Registering..." : "Register"}
-        </button>
+        <button type="submit">Register</button>
       </form>
+
+      {/* Status message showing errors or success */}
+      {status.message && (
+        <div className={`status-message ${status.type}`}>
+          {status.message}
+        </div>
+      )}
 
       <p>
         Already have an account?{" "}
